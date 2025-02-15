@@ -1,0 +1,318 @@
+\documentclass[11pt,oneside,a4paper, titlepage]{article}
+\addtolength{\voffset}{-15mm}
+\usepackage{inputenc}
+\usepackage{a4wide}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{color}
+\usepackage{float}
+\usepackage{moreverb}
+\usepackage{listings}
+\usepackage{fancyhdr}
+\usepackage{tikz}
+\usepackage{dsfont}
+\linespread{1.2}
+\usepackage{listings}
+
+\lstdefinestyle{R}
+{
+	numberblanklines=false,
+	language=R,
+	tabsize=4,
+	keywordstyle=\color{blue},
+	identifierstyle= %plain identifiers for R
+}
+
+
+\lstset{escapechar=@,style=R}
+
+\begin{document}
+\hrule height 1pt
+\vskip 0.2cm
+\noindent \textbf{Name:} Abderrazak \textsc{DERDOURI}\\
+\textbf{Object:} CQF Module 5 Exam\\
+\textbf{Date}: 2015/06/17
+\vskip 0.2cm
+\hrule height 1pt
+
+\begin{enumerate}
+\item[1.]	
+The value of the company's equity is \(E_0=\$6\) million and the volatility of its equity is \(\sigma_E=60\%\). Company's debt of
+\(D_0=\$10\) million matures in \(T=1\) year, and the risk free rate is \(r=3\%\). 
+\begin{enumerate}
+		\item[(a)] 		
+The solution of this problem requires numerical root-finding for a system of two non-linear equations for two unknowns \(V_0\) and \(\sigma_V\):
+\begin{eqnarray*}
+	\left\{ \begin{array}{ll}
+		E_0 = V_0 N(d_1) - D e^{-rT} N(d_2) \ (1)\\
+		\sigma_E E_0 = N(d_1)\sigma_V V_0 \ (2)
+	\end{array} \right.	
+\end{eqnarray*}
+The first equation is the expression of the firm's equity as a call option on the value of the assets. 
+The strike for such option is equal to the repayment required by the debt.\\
+
+Obtaining the second equation relies on the assumption that both, the firm's assets \(V_t\) and equity \(E_t\) are the processes
+with the same source of randomness \(dW_t\) that is, the same risk factor.
+\begin{eqnarray*}
+	\left\{ \begin{array}{ll}			
+	dV_t = rV_t dt + \sigma_V V_t dW_t \ (3)\\
+	dE_t = rE_t dt + \sigma_E E_t dW_t \ (4)
+	\end{array} \right.	
+\end{eqnarray*}
+
+Applying Ito's lemma to SDE(4) for a generalised payoff G = f(E, t) gives the result below.
+\begin{eqnarray*}
+dG=\bigg[\frac{\partial G}{\partial E} r E + \frac{\partial G}{\partial t} + \frac{1}{2}\frac{\partial^2 G}{\partial E^2} \sigma_E^2 E^2 \bigg] dt
++\frac{\partial G}{\partial E} \sigma_E E dW
+\end{eqnarray*}
+The similar result can be drawn for SDE (3) and payoff E = f(V, t). Equating diffusion parts gives (under the same risk factor assumption):
+\begin{eqnarray*}
+	\left\{ \begin{array}{ll}		
+	\sigma_E E_t \frac{\partial G}{\partial E} = \sigma_V V_t \frac{\partial G}{\partial V} = \sigma_V V_t \frac{\partial G}{\partial E} \frac{\partial E}{\partial V} = \sigma_V V_t \frac{\partial G}{\partial E} N(d_1)\\
+	\sigma_E = \frac{\partial E_t}{\partial V_t} V_t \sigma_V \\
+	\end{array} \right.	
+\end{eqnarray*}
+
+The solution for the firm's asset volatility becomes: 
+\begin{eqnarray*}
+\sigma_V=\frac{1}{N(d_1)}\frac{E_t}{V_t}\sigma_E.
+\end{eqnarray*}
+
+Using the parameters from the statement of the problem and using a numerical method to solve the non-linear system, we obtain:
+\begin{eqnarray*}
+	\left\{ \begin{array}{ll}	
+	\sigma_V = 23.3\% \\
+	V_0 = 15.684\\	
+	\end{array} \right.	
+\end{eqnarray*}
+
+		\item[(b)] The impact of a decrease in equity volatility \(\sigma_E\) on \(\sigma_V\):
+\vskip 0.2cm 		
+{
+	\centering
+	\begin{tabular}{|l|l|l|}
+		\hline
+		\(\sigma_E\) & \(\sigma_V\) & \(V_0\) \\
+		\hline		
+		 10\% &  3.82\%  &  15.70446 \\
+		\hline				 
+		 20\% &  7.64\%  & 15.70446 \\
+		\hline				 
+		 30\% &  11.46\%  & 15.70445 \\
+		\hline				 
+		 40\% &  15.29\% &  15.70403 \\
+		\hline				 
+		 50\% &  19.19\%   & 15.69981 \\
+		\hline				 
+		 60\% &  23.29\%  & 15.68385 \\	
+		\hline		
+	\end{tabular}
+}
+
+\begin{figure}[h!]
+	\includegraphics[width = \textwidth]{SigmaESigmaV.pdf}
+\end{figure}
+ 
+The company's volatility increase with the increase of the its equity volatility due to the assumption that both, the firm's assets and equity are processes with the same source of randomness.
+		\item[(c)]
+Using these values the probability of default is calculated as \(PD = 1- N(d2) = 2.59\%\) where the meaning of \(N(d2)\) is
+probability of the call option being in the money.
+
+\newpage
+		\item[(d)]	
+		In the Black and Cox (1976) model, the default probability from time \(t\) to time \(T\) is given by:
+\begin{eqnarray*}
+	P(\tau \le T | \tau>t) &=& N(h_1) + \exp\bigg\{ 2\bigg[r-\frac{\sigma_V^2}{2}\bigg] \log\bigg(\frac{K}{V_0}\bigg) \frac{1}{\sigma_V^2} \bigg\} N(h_2) \\
+	h_1 &=& \frac{\log\big(\frac{K}{e^{rT}V_0}\big)+\frac{\sigma_V^2}{2}T}{\sigma_V \sqrt{T}} \\ 
+	h_2 &=& h_1-\sigma_V \sqrt{T}
+\end{eqnarray*}
+					
+I obtained \(PD = 4\%\).\\
+The probability of default in the Black and Cox (1976) model is greater than in the Merton model, meaning investors should ask for a higher credit spread as compensation for taking on this extra risk.
+		
+	\end{enumerate}
+	
+\item[2.] Given:
+\begin{eqnarray*}
+	\rho_k &=& 1-\frac{4}{\alpha}\big[D_1(-\alpha)-1\big] \\
+	D_1 &=& \frac{1}{\alpha} \int_{0}^{\alpha} \frac{x}{e^x-1} dx + \frac{\alpha}{2}
+\end{eqnarray*}
+
+We can solve numerically for \(alpha\) using R software:
+
+\begin{eqnarray*}
+	f(\alpha) &=& 1-\frac{4}{\alpha} \bigg[\frac{1}{\alpha} \int_{0}^{\alpha} \frac{x}{e^x-1} dx + \frac{\alpha}{2} -1\bigg] = 0
+\end{eqnarray*}
+We obtained \(\alpha=-4.161064\).
+
+Price of the digital (binary) option is scaled to be equal to the probability that the option
+will be in the money at maturity (discounted). It is by construction a uniform variable
+u \(\in\) [0; 1]. For a call option, we have:
+\begin{eqnarray*}
+	u_1 &=& B(S_1,t) = e^{-r(T-t)} N(d_2)\\
+	d_2 &=& \frac{\log\big(\frac{S}{E}\big) + \big(r-\frac{\sigma^2}{2}\big)(T-t)}{\sigma \sqrt{(T-t)}} \\
+	   &=& \frac{\log\big(\frac{110}{120}\big) + \big(0-\frac{{0.2}^2}{2}\big)\times 0.5}{0.2\sqrt{0.5}} \\
+	   &=& -0.685974
+\end{eqnarray*}
+
+\begin{eqnarray*}
+	u_2 &=& B(S_2,t) = e^{-r(T-t)} N(d_2)\\
+	d_2 &=& \frac{\log\big(\frac{S}{E}\big) + \big(r-\frac{\sigma^2}{2})\big(T-t\big)}{\sigma \sqrt{(T-t)}} \\
+	&=& \frac{\log\big(\frac{110}{120}\big) + \big(0-\frac{{0.4}^2}{2}\big)\times 0.5}{0.4\sqrt{0.5}} \\
+	&=& -0.449053
+\end{eqnarray*}
+
+Therefore, the value of the first single-asset binary call is :\\
+\(u_1 = B(S_1; t) = N(d2) = N(-0.685974) = 0.2463647\).\\
+and the value of the second single-asset binary call is:\\
+\(u_2 = B(S_2; t) = N(d2) = N(-0.449053) = 0.3266967\).\\
+
+Using the single-asset call values 0.2463647 and 0.3266967 and association parameter = -4.161064 (e.g., inferred from
+correlation) as inputs to Frank copula, we obtain:
+\begin{eqnarray*}
+	C(u_1, u_2, \rho) &=& \frac{1}{\alpha} \log\bigg[1+\frac{(e^{\alpha u_1}-1)(e^{\alpha u_2}-1)}{(e^{\alpha}-1)}\bigg] \\
+					  &=& \frac{1}{-4.161064} \log\bigg[1+\frac{(e^{-4.161064\times 0.2463647}-1)(e^{-4.161064\times 0.3266967}-1)}{(e^{-4.161064}-1)}\bigg] \\
+					  &=& 0.1590649
+\end{eqnarray*}
+
+
+\item[3.] 
+
+CDS : JP Morgan Formulation:
+\begin{eqnarray*}
+	\text{Premium Leg} = PL_N &=& S_N \sum_{n=1}^{N} D(0, T_n) P(T_n) \Delta t_n\\
+	\text{Default Leg} = DL_N &=& (1-R) \sum_{n=1}^{N} D(0, T_n) (P(T_{n-1})- P(T_n))
+\end{eqnarray*}
+
+We assume that we have a vector of CDS market spreads for increasing maturities \([S_1,S_2,...,S_N]\). We will determine their associated survival probabilities \([P(T_1),P(T_2),...,P(T_N)]\).\\
+
+Case N = 1.
+\begin{eqnarray*}
+	PL_N &=& S_N \sum_{n=1}^{N} D(0, T_n) P(T_n) \Delta t_n\\
+	PL_1 &=& S_1 D(0, T_1) P(T_1 \Delta t_1 \\
+	DL_N &=& (1-R) \sum_{n=1}^{N} D(0, T_n) (P(T_{n-1})- P(T_n)) \\
+	DL_1 &=& (1-R) D(0, T_1) (P(T_0)- P(T_1)) \\
+	PL_1 &=& D_1 \\
+	S_1 D(0, T_1) P(T_1 \Delta t_1 &=& (1-R) D(0, T_1) (P(T_0)- P(T_1))\\
+								   &=& (L) D(0, T_1) (P(T_0)- P(T_1)) \\
+								   &=& L D(0, T_1) P(T_0)- L D(0, T_1)P(T_1) \\
+	S_1 D(0, T_1) P(T_1 \Delta t_1 + L D(0, T_1)P(T_1) &=& L D(0, T_1) P(T_0) \\
+	P(T_1) \big[S_1D(0, T_1) \Delta t_1 + L D(0, T_1)\big] &=& LD(0,T_1) P(T_0)
+\end{eqnarray*}
+with \(P(T_0)=\) we have :
+\begin{eqnarray*}
+	P(T_1) &=& \frac{L}{S_1\Delta t_1 + L}
+\end{eqnarray*}
+
+Case N=2
+\begin{eqnarray*}
+	PL_N &=& S_N \sum_{n=1}^{N} D(0, T_n) P(T_n) \Delta t_n\\
+	PL_2 &=& S_N \sum_{n=1}^{2} D(0, T_n) P(T_n) \Delta t_n\\
+	PL_2 &=& S_2 [D(0, T_1) P(T_1) \Delta t_1 + D(0, T_2) P(T_2) \Delta t_2]\\
+	DL_N &=& (1-R) \sum_{n=1}^{N} D(0, T_n) (P(T_{n-1})- P(T_n)) \\
+	DL_2 &=& (1-R) \sum_{n=1}^{2} D(0, T_n) (P(T_{n-1})- P(T_n)) \\	
+	DL_2 &=& (1-R) [D(0, T_1) (P(T_0)- P(T_1)) \\
+		 &+& D(0, T_2) (P(T_1)- P(T_2))] \\
+	     &=& L \times [D(0, T_1) (P(T_0)- P(T_1)) \\
+	     &+& D(0, T_2) (P(T_1)- P(T_2))] \\
+	PL_2 &=& DL_2 \\
+	S_2 [D(0, T_1) P(T_1) \Delta t_1 + D(0, T_2) P(T_2) \Delta t_2] &=& L \times [D(0, T_1) (P(T_0)- P(T_1))] \\
+	    &+& L \times [D(0, T_2) (P(T_1)- P(T_2))]
+\end{eqnarray*}
+After rearranging we obtain :
+\begin{eqnarray*}
+	P(T_2) &=& \frac{D(0, T1) [L-P(T_1)(L+S_2\Delta t_2)]}{(D(0,T_2)(L+S_2\Delta t_2 ))} + \frac{P(T_1)L}{L+\Delta t_2 S_2}
+\end{eqnarray*}
+
+In general, we can write down the expression for \(P(T_N)\) as:
+\begin{eqnarray*}
+	P(T_N) &=& \frac{\sum_{n=1}^{N-1} [L\times P(T_{n-1})-(L+\Delta t_n S_N)P(T_N)]}{D(0,T_N)(L+\Delta t_n S_N)} + \frac{P(T_{N-1})L}{L+\Delta t_NS_N}
+\end{eqnarray*}
+Thus, we begin with \(P(T_1)\) and, through a process of bootstrapping, we arrive at all \(P(T_n), n=1,...,N.\).
+
+\begin{enumerate}
+	
+\item[1.] Bootstrapped implied survival probabilities for WFC bank with recovery rate RR = 50\%.
+
+{
+	\centering
+	\begin{tabular}{|l|l|l|l|l|}
+		\hline
+		\small{\textbf{Maturity}} &  \small{\textbf{WFC}} & \small{\textbf{Z(0; T)}}  & \small{\textbf{Surv Proba(WFC)}} & \small{\textbf{lamda(WFC)}} \\
+		\hline
+		1Y & 50 & 0.97 & \textcolor{green}{99.01\%} & \textcolor{green}{0.99\%} \\
+		\hline
+		2Y & 77 & 0.94 & \textcolor{green}{96.97\%} & \textcolor{green}{2.08\%} \\
+		\hline
+		3Y & 94 & 0.92 & \textcolor{green}{94.5\%} & \textcolor{green}{2.57\%} \\
+		\hline
+		\textcolor{blue}{4Y} & \textcolor{blue}{109.5} & \textcolor{blue}{0.89} & \textcolor{green}{91.53\%} & \textcolor{green}{3.18\%} \\
+		\hline
+		5Y & 125 & 0.86 & \textcolor{green}{88\%} & \textcolor{green}{3.88\%} \\
+		\hline
+		\textcolor{blue}{6Y} & \textcolor{blue}{129} & \textcolor{blue}{0.83} & \textcolor{green}{0.85436} & \textcolor{green}{3.01\%}\\
+		\hline
+		7Y & 133 & 0.81 & \textcolor{green}{0.827388} & \textcolor{green}{3.20\%} \\
+		\hline		
+	\end{tabular}
+}
+\vskip 0.2cm 	
+
+Plot fitting the Exponential PDF \(f(t)=\lambda\exp(-\lambda t)\) using these discrete hazard rates.\\
+
+\begin{figure}[h!]
+	\includegraphics[width = \textwidth]{hazardRates}
+\end{figure}
+
+
+\item[2.] 
+
+Bootstrapped implied survival probabilities for CCMO corporation with recovery rate RR = 10\%.
+
+{
+	\centering
+	\begin{tabular}{|l|l|l|l|l|}
+		\hline
+		\small{\textbf{Maturity}} &  \small{\textbf{CCMO}} & \small{\textbf{Z(0; T)}}  & \small{\textbf{Surv Proba(CCMO)}} & \small{\textbf{lamda(CCMO)}} \\
+		\hline
+		1Y & 751 & 0.97  & \textcolor{green}{92.29\%} & \textcolor{green}{8\%} \\
+		\hline
+		2Y & 1164 & 0.94 & \textcolor{green}{77.85\%} & \textcolor{green}{17.8\%} \\
+		\hline
+		3Y & 1874 & 0.92 &  \textcolor{green}{52.89\%} & \textcolor{green}{38.8\%} \\
+		\hline
+		\textcolor{blue}{4Y} & \textcolor{blue}{3015} & \textcolor{blue}{0.89} & \textcolor{green}{17.05\%} & \textcolor{green}{NAN} \\
+		\hline
+		5Y & 4156 & 0.86 & \textcolor{green}{-11.18\%} & \textcolor{green}{NAN}\\
+		\hline
+		\textcolor{blue}{6Y} & \textcolor{blue}{51195} & \textcolor{blue}{0.83} &  \textcolor{green}{-24.868\%} & \textcolor{green}{NAN} \\
+		\hline
+		7Y & 6083 & 0.81 & \textcolor{green}{-30.30\%} & \textcolor{green}{NAN} \\
+		\hline		
+	\end{tabular}
+}
+\vskip 0.2cm 
+
+Starting the year five the survival probabilities becomes negative, CCMO will absolutely default by the end of the year 5.
+
+\item[3.]
+I expected that an increase in recovery rate will increase the implied survival probabilities. But the plot following demonstrate a very small change on the survival probabilities term structure varying the recovery rate from \(50\%\) to \(70\%\) . The recovery rate is not the most important factor determining the survival probabilities term structure.
+
+\begin{figure}[h!]
+	\includegraphics[width = \textwidth]{SurvivalProbability.pdf}
+\end{figure}
+
+\end{enumerate}
+
+\section*{Code}
+\begin{enumerate}
+\item [1.] Abderrazak\_DERDOURI\_CQF\_Module\_5\_Exam.R
+\item [2.] cdsBootstrappingTest.cpp
+\end{enumerate}
+
+\end{enumerate}
+\end{document}
+
+\lambda

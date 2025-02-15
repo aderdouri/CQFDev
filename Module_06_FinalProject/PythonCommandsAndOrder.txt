@@ -1,0 +1,21 @@
+python -m unittest capletCapPricing.CplCapPricingTests.testCplPricing
+python -m unittest capletCapPricing.CplCapPricingTests.testCapPricing
+
+python -m unittest lmmCalibration.CapATMStrikeTests.testATMStrike
+
+python -m unittest capletVolatilityStripping.CplVolStripTests.testCplVolStrip
+
+python -m unittest abcdInstantaneousVolFit.InstVolFitTests.testabcdFit
+python -m unittest abcdInstantaneousVolFit.InstVolFitTests.testParametricInstVol
+
+python -m unittest g1g2g3InsVolFit.g1g2g2FitTests.testParamsg1g2g2Fit
+python -m unittest g1g2g3InsVolFit.g1g2g2FitTests.testParametricCorrInstVol
+
+python -m unittest monteCarloCapPricing.MCCapPricingTests.testMCCapPricing
+
+python -m unittest volCorrelationGen.VolCorrGenTests.test01ExpVolCorrGen
+python -m unittest volCorrelationGen.VolCorrGenTests.test02VolParamCorrGen
+python -m unittest monteCarloSwaptionPricing.MCSwaptionPricingTests.testMCSwaptionPricing
+
+python -m unittest interestRateSwapCVACalculation.IRSCVATests.test01IRSCVA
+python -m unittest interestRateSwapCVACalculation.IRSCVATests.test02IRSCVA
