@@ -1,19 +1,18 @@
 //
 // Date: Sunday, April 18, 2015
 // File name: MonteCarloTest.cpp
-// Version: 1 
+// Version: 1
 // Author: Abderrazak DERDOURI
 // Subject: CQF Exam module 3
 //
 // Description: Monte Carlo Method Milstein scheme Test
-//	
+//
 //
 // Notes:
 // Revision History:
 //
 
-
-#include "..\CppUnitTest\TestHarness.h"
+#include "../CppUnitTest/TestHarness.h"
 #include "BlackScholes.h"
 #include "MonteCarlo.h"
 #include "Matrix.h"
@@ -21,27 +20,23 @@
 #include <fstream>
 #include <memory>
 
-
 namespace
 {
-	void printHeaderBinaryOptionPriceFile(const char* fileName)
+	void printHeaderBinaryOptionPriceFile(const char *fileName)
 	{
 		std::ofstream ofs;
-		ofs.open(fileName);		
+		ofs.open(fileName);
 		ofs << "Asset, Strike, InterestRate, Volatility, Expiration, TimeStep";
 		ofs << ", NumberAssetStep, NumbreOfSimulation, BS Price, MC Price, ErrorWithBS, ErrorWithBSPercentage " << "\n";
 		ofs.close();
 	}
 
-
-	void printBinaryOptionPriceFile(const char* fileName, double Asset, double Strike, double InterestRate, double Volatility
-		, double Expiration, double TimeStep, int NumberAssetStep, int NumbreOfSimulation, double BSPrice, double MCPrice
-		, double ErrorWithBS, double ErrorWithBSPercentage)
+	void printBinaryOptionPriceFile(const char *fileName, double Asset, double Strike, double InterestRate, double Volatility, double Expiration, double TimeStep, int NumberAssetStep, int NumbreOfSimulation, double BSPrice, double MCPrice, double ErrorWithBS, double ErrorWithBSPercentage)
 	{
 		std::ofstream ofs;
 		ofs.open(fileName, std::ios::app);
 
-		ofs << Asset <<",";
+		ofs << Asset << ",";
 		ofs << Strike << ",";
 		ofs << InterestRate << ",";
 		ofs << Volatility << ",";
@@ -55,12 +50,11 @@ namespace
 		ofs << ErrorWithBSPercentage << "," << "\n";
 
 		ofs.close();
-
 	}
 }
 
 //
-//Varying the number of simulations
+// Varying the number of simulations
 //
 TEST(BinaryOptionPricing, MonteCarloTest1)
 {
@@ -78,27 +72,25 @@ TEST(BinaryOptionPricing, MonteCarloTest1)
 
 	for (int i = 1; i <= 10; ++i)
 	{
-		// Price with Black and Scholes 
+		// Price with Black and Scholes
 		std::shared_ptr<BlackScholes> BS(new BlackScholes(Asset, Strike, InterestRate, Volatility, Expiration));
 		BS->price();
 
 		// Price with Monte Carlo
-		std::shared_ptr<MonteCarlo> MC(new MonteCarlo(Asset, Strike, InterestRate, Volatility, Expiration
-			, TimeStep, NumberAssetStep, NumbreOfSimulation));
+		std::shared_ptr<MonteCarlo> MC(new MonteCarlo(Asset, Strike, InterestRate, Volatility, Expiration, TimeStep, NumberAssetStep, NumbreOfSimulation));
 		MC->price();
 
 		double err = BS->getPrice() - MC->getPrice();
 		double BSFormula = (BS->getPrice() > 0.0 ? BS->getPrice() : 1); // to avoid the the divding by zero case
 
-		printBinaryOptionPriceFile("binaryCallMCPriceTest1.csv", Asset, Strike, InterestRate, Volatility, Expiration
-			, TimeStep, NumberAssetStep, NumbreOfSimulation, BS->getPrice(), MC->getPrice(), err, std::abs(err / BSFormula));
+		printBinaryOptionPriceFile("binaryCallMCPriceTest1.csv", Asset, Strike, InterestRate, Volatility, Expiration, TimeStep, NumberAssetStep, NumbreOfSimulation, BS->getPrice(), MC->getPrice(), err, std::abs(err / BSFormula));
 
 		NumbreOfSimulation += 1000;
 	}
 }
 
 //
-//Varying the time step size
+// Varying the time step size
 //
 
 TEST(BinaryOptionPricing, MonteCarloTest2)
@@ -117,24 +109,21 @@ TEST(BinaryOptionPricing, MonteCarloTest2)
 
 	for (int i = 1; i <= 10; ++i)
 	{
-		// Price with Black and Scholes 
+		// Price with Black and Scholes
 		std::shared_ptr<BlackScholes> BS(new BlackScholes(Asset, Strike, InterestRate, Volatility, Expiration));
 		BS->price();
 
 		// Price with Monte Carlo
-		std::shared_ptr<MonteCarlo> MC(new MonteCarlo(Asset, Strike, InterestRate, Volatility, Expiration
-			, TimeStep, NumberAssetStep, NumbreOfSimulation));
+		std::shared_ptr<MonteCarlo> MC(new MonteCarlo(Asset, Strike, InterestRate, Volatility, Expiration, TimeStep, NumberAssetStep, NumbreOfSimulation));
 		MC->price();
 
 		double err = BS->getPrice() - MC->getPrice();
 		double BSFormula = (BS->getPrice() > 0.0 ? BS->getPrice() : 1); // to avoid the the divding by zero case
 
-		printBinaryOptionPriceFile("binaryCallMCPriceTest2.csv", Asset, Strike, InterestRate, Volatility, Expiration
-			, TimeStep, NumberAssetStep, NumbreOfSimulation, BS->getPrice(), MC->getPrice(), err, std::abs(err / BSFormula));
+		printBinaryOptionPriceFile("binaryCallMCPriceTest2.csv", Asset, Strike, InterestRate, Volatility, Expiration, TimeStep, NumberAssetStep, NumbreOfSimulation, BS->getPrice(), MC->getPrice(), err, std::abs(err / BSFormula));
 
 		NumberAssetStep += 100;
 		TimeStep = Expiration / NumberAssetStep;
-
 	}
 }
 
@@ -153,7 +142,7 @@ TEST(BinaryOptionPricing, MonteCarloTest3)
 	double TimeStep = Expiration / NumberAssetStep;
 	int NumbreOfSimulation = 10000;
 
-	// Price with Black and Scholes 
+	// Price with Black and Scholes
 	std::shared_ptr<BlackScholes> BS(new BlackScholes(Asset, Strike, InterestRate, Volatility, Expiration));
 	BS->price();
 
@@ -161,8 +150,7 @@ TEST(BinaryOptionPricing, MonteCarloTest3)
 	std::cout << "Black and Scholes Call Price: " << BS->getPrice() << std::endl;
 
 	// Price with Monte Carlo
-	std::shared_ptr<MonteCarlo> MC(new MonteCarlo(Asset, Strike, InterestRate, Volatility, Expiration
-		, TimeStep, NumberAssetStep, NumbreOfSimulation));
+	std::shared_ptr<MonteCarlo> MC(new MonteCarlo(Asset, Strike, InterestRate, Volatility, Expiration, TimeStep, NumberAssetStep, NumbreOfSimulation));
 	MC->price();
 
 	std::cout << "============================================" << std::endl;
