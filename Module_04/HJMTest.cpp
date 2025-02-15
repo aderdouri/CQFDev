@@ -1,19 +1,18 @@
 //
 // Date: Sunday, Mai 21, 2015
 // File name: HJMTest.cpp
-// Version: 1 
+// Version: 1
 // Author: Abderrazak DERDOURI
 // Subject: CQF Exam module 4
 //
 // Description: HJM Test
-//	
+//
 //
 // Notes:
 // Revision History:
 //
 
-
-#include "..\CppUnitTest\TestHarness.h"
+#include "../CppUnitTest/TestHarness.h"
 #include "HJM.h"
 #include <iostream>
 #include <vector>
@@ -25,13 +24,12 @@
 #include <chrono>
 #include <ctime>
 
-
 namespace
 {
 	//
 	// Returns a vector whose elements are the cumulative sums of the elements of the argument.
 	//
-	void cumsum(std::vector<double> const& ZCBPriceVect, std::vector<double>& cumsumVect) 
+	void cumsum(std::vector<double> const &ZCBPriceVect, std::vector<double> &cumsumVect)
 	{
 		double csum = 0.0;
 		for (unsigned int i = 0; i < ZCBPriceVect.size(); ++i)
@@ -43,19 +41,18 @@ namespace
 
 	//
 	// Calculate an arithmetic mean given a vector
-	// 
-	double mean(std::vector<double> const& v)
+	//
+	double mean(std::vector<double> const &v)
 	{
 		double sum = std::accumulate(v.begin(), v.end(), 0.0);
-		return(sum / v.size());
+		return (sum / v.size());
 	}
-
 
 }
 
 TEST(HJM_Model, ZeroCouponBondPricing)
 {
-	std::cout <<"Zero Coupon Bond Pricing using HJM"<< std::endl;
+	std::cout << "Zero Coupon Bond Pricing using HJM" << std::endl;
 
 	std::chrono::time_point<std::chrono::system_clock> start, end;
 	start = std::chrono::system_clock::now();
@@ -80,12 +77,12 @@ TEST(HJM_Model, ZeroCouponBondPricing)
 
 	std::vector<double> cumsumZCBPriceVect;
 	cumsum(ZCBPriceVect, cumsumZCBPriceVect);
-	
+
 	// generate a convergence diagram to plot
 	std::ofstream ofs;
 	ofs.open("HJM_MC_convergence_diagram.csv");
 	int n = 1;
-	for (auto& elem : cumsumZCBPriceVect)
+	for (auto &elem : cumsumZCBPriceVect)
 	{
 		ofs << (elem / n) << ";";
 		n++;
@@ -95,5 +92,4 @@ TEST(HJM_Model, ZeroCouponBondPricing)
 	std::chrono::duration<double> elapsed_seconds = end - start;
 	std::time_t end_time = std::chrono::system_clock::to_time_t(end);
 	std::cout << "finished computation at: " << std::ctime(&end_time) << "elapsed time: " << elapsed_seconds.count() << "s\n";
-
 }

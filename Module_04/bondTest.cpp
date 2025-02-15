@@ -1,19 +1,18 @@
 //
 // Date: Sunday, Mai 21, 2015
 // File name: bondTest.cpp
-// Version: 1 
+// Version: 1
 // Author: Abderrazak DERDOURI
 // Subject: CQF Exam module 4
 //
 // Description: bonds calculation Test
-//	
+//
 //
 // Notes:
 // Revision History:
 //
 
-
-#include "..\CppUnitTest\TestHarness.h"
+#include "../CppUnitTest/TestHarness.h"
 #include <iostream>
 
 namespace
@@ -39,29 +38,29 @@ namespace
 		double x0 = 0.01; // The initial value
 		double x1 = 0.0;
 
-		double tolerance = std::pow(10, -7);   // 7 digit accuracy is desired
-		double epsilon = std::pow(10, -14); 	// Don't want to divide by a number smaller than this
+		double tolerance = std::pow(10, -7); // 7 digit accuracy is desired
+		double epsilon = std::pow(10, -14);	 // Don't want to divide by a number smaller than this
 
-		int maxIterations = 20;				// Don't allow the iterations to continue indefinitely
-		bool haveWeFoundSolution = false;	// % Have not converged to a solution yet
+		int maxIterations = 20;			  // Don't allow the iterations to continue indefinitely
+		bool haveWeFoundSolution = false; // % Have not converged to a solution yet
 
 		for (int i = 0; i < maxIterations; ++i)
 		{
 			double y = V(x0);
 			double yprime = dV(x0);
 
-			if (abs(yprime) < epsilon)			// Don't want to divide by too small of a number
-				break;							// denominator is too small
+			if (abs(yprime) < epsilon) // Don't want to divide by too small of a number
+				break;				   // denominator is too small
 			// Leave the loop
 
-			x1 = x0 - (y / yprime);                       // Do Newton's computation
+			x1 = x0 - (y / yprime); // Do Newton's computation
 
 			if (abs(x1 - x0) / abs(x1) < tolerance) // If the result is within the desired tolerance
 			{
 				haveWeFoundSolution = true;
-				break;                                         // Done, so leave the loop
+				break; // Done, so leave the loop
 			}
-			x0 = x1;                                            // Update x0 to start the process again
+			x0 = x1; // Update x0 to start the process again
 		}
 
 		if (haveWeFoundSolution)
@@ -78,7 +77,6 @@ namespace
 
 }
 
-
 TEST(bondTest, ZCBond)
 {
 	// 1.a
@@ -87,7 +85,7 @@ TEST(bondTest, ZCBond)
 
 	// 1.b
 	double V = 90;
-	std::cout <<"Duration: "<< (-1 / V)*dV(y) << std::endl;
-	std::cout << "Convexity: " << (1 / V)*d2V(y) << std::endl;
-	double C = (1 / V)*d2V(y);
+	std::cout << "Duration: " << (-1 / V) * dV(y) << std::endl;
+	std::cout << "Convexity: " << (1 / V) * d2V(y) << std::endl;
+	double C = (1 / V) * d2V(y);
 }

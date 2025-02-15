@@ -13,7 +13,7 @@
 //
 
 #if !defined(MATRIX_H_ALREADY_INCLUDED)
-#define MATRIX_H_ALREADY_INCLUDEDA
+#define MATRIX_H_ALREADY_INCLUDED
 
 #include <iostream>
 
