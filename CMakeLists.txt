@@ -21,9 +21,12 @@ set(SOURCE_FILES_CPPUNITTEST
     CppUnitTest/TestResult.h
 )
 
+set(SOURCE_FILES_MATRIX
+    Matrix/Matrix.h
+    Matrix/Matrix.cpp
+)
+
 set(SOURCE_FILES_MODULE_03
-    Module_03/Matrix.h
-    Module_03/Matrix.cpp
     Module_03/BlackScholes.h
     Module_03/MonteCarlo.cpp
     Module_03/BlackScholes.cpp
@@ -38,8 +41,6 @@ set(SOURCE_FILES_MODULE_04
     Module_04/HJM.cpp
     Module_04/HJM.h
     Module_04/HJMTest.cpp
-    Module_04/Matrix.cpp
-    Module_04/Matrix.h
 )
 
 set(SOURCE_FILES_MODULE_05
@@ -48,10 +49,10 @@ set(SOURCE_FILES_MODULE_05
     Module_05/cdsBootstrappingTest.cpp
 )
 # ExplicitFiniteDifference executable
-add_executable (explicitFiniteDifference ${SOURCE_FILES_CPPUNITTEST} ${SOURCE_FILES_MODULE_03})
+add_executable (explicitFiniteDifference ${SOURCE_FILES_CPPUNITTEST} ${SOURCE_FILES_MATRIX} ${SOURCE_FILES_MODULE_03})
 
 # HJM model executable
-add_executable (hjm ${SOURCE_FILES_CPPUNITTEST} ${SOURCE_FILES_MODULE_04})
+add_executable (hjm ${SOURCE_FILES_CPPUNITTEST} ${SOURCE_FILES_MATRIX} ${SOURCE_FILES_MODULE_04})
 
 # CDS Bootstrapping executable
 add_executable (cdsBootstrapping ${SOURCE_FILES_CPPUNITTEST} ${SOURCE_FILES_MODULE_05})

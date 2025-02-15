@@ -15,7 +15,7 @@
 #include "../CppUnitTest/TestHarness.h"
 #include "BlackScholes.h"
 #include "MonteCarlo.h"
-#include "Matrix.h"
+#include "../Matrix/Matrix.h"
 #include "ExplicitFiniteDifference.h"
 #include <iostream>
 #include <fstream>

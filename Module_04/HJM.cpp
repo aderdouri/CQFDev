@@ -1,45 +1,35 @@
 //
 // Date: Sunday, April 18, 2015
 // File name: HJM.cpp
-// Version: 1 
+// Version: 1
 // Author: Abderrazak DERDOURI
 //
 // Subject: Certificate in Quantitative Finance Module 4 Exam
 //
 // Description: Generate a whole forward rate for the HJM model
-//				
-//	
+//
+//
 //
 // Notes:
 // Revision History:
 //
 
 #include "HJM.h"
-#include "Matrix.h"
+#include "../Matrix/Matrix.h"
 #include <vector>
 #include <fstream>
 #include <algorithm>
 #include <numeric>
 #include <random>
 
-
-HJM::HJM(double tStep, int maturity, int NbTenor) :_tStep(tStep), _maturity(maturity), _tenor(NbTenor), _price(0.0)
+HJM::HJM(double tStep, int maturity, int NbTenor) : _tStep(tStep), _maturity(maturity), _tenor(NbTenor), _price(0.0)
 {
 	//
-	//First row is the last observed forward curve
-	//from last row in the priveded HJM PCA file / BOE data
+	// First row is the last observed forward curve
+	// from last row in the priveded HJM PCA file / BOE data
 	//
 	_observedFwdCurve = {
-		0.046138361, 0.045251174, 0.042915805, 0.04283311, 0.043497719, 0.044053792
-		, 0.044439518, 0.044708496, 0.04490347, 0.045056615, 0.045184474, 0.045294052
-		, 0.045386152, 0.045458337, 0.045507803, 0.045534188, 0.045541867, 0.045534237
-		, 0.045513128, 0.045477583, 0.04542292, 0.045344477, 0.04523777, 0.045097856
-		, 0.044925591, 0.04472353, 0.044494505, 0.044242804, 0.043973184, 0.043690404
-		, 0.043399223, 0.043104398, 0.042810688, 0.042522852, 0.042244909, 0.041978295
-		, 0.041723875, 0.041482518, 0.04125509, 0.041042459, 0.040845492, 0.040665047
-		, 0.040501255, 0.040353009, 0.040219084, 0.040098253, 0.039989288
-		, 0.039890964, 0.039802053, 0.039721437, 0.03964844
-	};
+		0.046138361, 0.045251174, 0.042915805, 0.04283311, 0.043497719, 0.044053792, 0.044439518, 0.044708496, 0.04490347, 0.045056615, 0.045184474, 0.045294052, 0.045386152, 0.045458337, 0.045507803, 0.045534188, 0.045541867, 0.045534237, 0.045513128, 0.045477583, 0.04542292, 0.045344477, 0.04523777, 0.045097856, 0.044925591, 0.04472353, 0.044494505, 0.044242804, 0.043973184, 0.043690404, 0.043399223, 0.043104398, 0.042810688, 0.042522852, 0.042244909, 0.041978295, 0.041723875, 0.041482518, 0.04125509, 0.041042459, 0.040845492, 0.040665047, 0.040501255, 0.040353009, 0.040219084, 0.040098253, 0.039989288, 0.039890964, 0.039802053, 0.039721437, 0.03964844};
 
 	int maxTenor = static_cast<int>(std::floor(_tenor / 2));
 	double tenor = 0.0;
@@ -48,11 +38,10 @@ HJM::HJM(double tStep, int maturity, int NbTenor) :_tStep(tStep), _maturity(matu
 		_tenorVect.push_back(tenor);
 		tenor += 0.5;
 	}
-
 }
 double HJM::Vol_1(double Tau)
 {
-	return 0.0064306548; //first vol factor simplified to flat
+	return 0.0064306548; // first vol factor simplified to flat
 }
 double HJM::Vol_2(double Tau)
 {
@@ -64,8 +53,8 @@ double HJM::Vol_3(double Tau)
 }
 
 //
-//This funciton carries out integration for all principal factors. 
-//It uses the fact that volatility is function of time in HJM model
+// This funciton carries out integration for all principal factors.
+// It uses the fact that volatility is function of time in HJM model
 //
 double HJM::m(double Tau)
 {
@@ -74,15 +63,15 @@ double HJM::m(double Tau)
 		return 0.0;
 	}
 
-	double dTau = 0.01;     //initial step
+	double dTau = 0.01; // initial step
 	int N = static_cast<int>(std::floor(Tau / dTau));
-	dTau = Tau / N;         //step for Tau
+	dTau = Tau / N; // step for Tau
 
 	// using trapezium rule to compute M1
 	double M1 = 0.5 * Vol_1(0);
 	for (int i = 1; i <= N - 1; i++)
 	{
-		M1 = M1 + Vol_1(i * dTau);  // not adjusted by *0.5 because of repeating terms x1...xn-1 - see trapezoidal rule
+		M1 = M1 + Vol_1(i * dTau); // not adjusted by *0.5 because of repeating terms x1...xn-1 - see trapezoidal rule
 	}
 
 	M1 = M1 + 0.5 * Vol_1(Tau);
@@ -123,14 +112,14 @@ double HJM::rnorm(double mean, double std) const
 	static double y2;
 	static int use_last = 0;
 
-	if (use_last)  // use value from previous call
+	if (use_last) // use value from previous call
 	{
 		y1 = y2;
 		use_last = 0;
 	}
 	else
 	{
-		do 
+		do
 		{
 			x1 = 2 * (double)rand() / RAND_MAX - 1; // rand in [0,1]
 			x2 = 2 * (double)rand() / RAND_MAX - 1;
@@ -170,16 +159,16 @@ void HJM::price()
 			double dF = PathMatrix(simu - 1, tenor + 1) - PathMatrix(simu - 1, tenor);
 			double dtau = _tenorVect[tenor + 1] - _tenorVect[tenor];
 			double t = _tenorVect[tenor];
-			double x = (dF / dtau)*dt;
-			double df = PathMatrix(simu - 1, tenor) + m(t)*dt + (Vol_1(t)*rnorm() + Vol_2(t)*rnorm() + Vol_3(t)*rnorm())*std::sqrt(dt) + (dF / dtau)*dt;
+			double x = (dF / dtau) * dt;
+			double df = PathMatrix(simu - 1, tenor) + m(t) * dt + (Vol_1(t) * rnorm() + Vol_2(t) * rnorm() + Vol_3(t) * rnorm()) * std::sqrt(dt) + (dF / dtau) * dt;
 			PathMatrix(simu, tenor) = df;
 		}
 		// case tenor == NbTenor==25years
 		double dF = PathMatrix(simu - 1, _tenor - 1) - PathMatrix(simu - 1, _tenor - 2);
 		double dtau = _tenorVect[_tenor - 1] - _tenorVect[_tenor - 2];
 		double t = _tenorVect[_tenor - 1];
-		double x = (dF / dtau)*dt;
-		double df = PathMatrix(simu - 1, _tenor - 1) + m(t)*dt + (Vol_1(t)*rnorm() + Vol_2(t)*rnorm() + Vol_3(t)*rnorm())*std::sqrt(dt) + (dF / dtau)*dt;
+		double x = (dF / dtau) * dt;
+		double df = PathMatrix(simu - 1, _tenor - 1) + m(t) * dt + (Vol_1(t) * rnorm() + Vol_2(t) * rnorm() + Vol_3(t) * rnorm()) * std::sqrt(dt) + (dF / dtau) * dt;
 		PathMatrix(simu, _tenor - 1) = df;
 	}
 
