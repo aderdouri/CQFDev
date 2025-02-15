@@ -1,6 +1,6 @@
 import numpy as np
 
-def binomial_tree(S0, K, T, r, sigma, num_steps, is_call=True):
+def binomial_tree(S0, K, T, r, sigma, num_steps, is_call=True, is_american=False):
     """
     Price an option using the binomial tree method.
 
@@ -12,6 +12,7 @@ def binomial_tree(S0, K, T, r, sigma, num_steps, is_call=True):
     - sigma: Volatility (float)
     - num_steps: Number of steps in the binomial tree (int)
     - is_call: Whether the option is a call (default True). False for a put option.
+    - is_american: Whether the option is American (default False). True for American option.
 
     Returns:
     - option_price: float
@@ -41,7 +42,15 @@ def binomial_tree(S0, K, T, r, sigma, num_steps, is_call=True):
     # Backward induction
     for i in range(num_steps - 1, -1, -1):
         for j in range(i + 1):
-            V[i, j] = np.exp(-r * delta_t) * (p * V[i + 1, j] + q * V[i + 1, j + 1])
+            continuation_value = np.exp(-r * delta_t) * (p * V[i + 1, j] + q * V[i + 1, j + 1])
+            if is_american:
+                if is_call:
+                    intrinsic_value = max(S[i, j] - K, 0)
+                else:
+                    intrinsic_value = max(K - S[i, j], 0)
+                V[i, j] = max(intrinsic_value, continuation_value)
+            else:
+                V[i, j] = continuation_value
 
     return V[0, 0]
 
@@ -54,7 +63,7 @@ if __name__ == "__main__":
     r = 0.05
     T = 1
 
-    call_price = binomial_tree(S0, K, T, r, sigma, num_steps, is_call=True)
-    put_price = binomial_tree(S0, K, T, r, sigma, num_steps, is_call=False)
-    print(f"Call Option Price: {call_price:.6f}")
-    print(f"Put Option Price: {put_price:.6f}")
+    call_price = binomial_tree(S0, K, T, r, sigma, num_steps, is_call=True, is_american=True)
+    put_price = binomial_tree(S0, K, T, r, sigma, num_steps, is_call=False, is_american=True)
+    print(f"American Call Option Price: {call_price:.6f}")
+    print(f"American Put Option Price: {put_price:.6f}")
